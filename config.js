@@ -1,6 +1,8 @@
+
+// Environmrnt object
 const environments = new Object();
 
-
+// Staging environment
 environments.staging = {
 
     httpPort: 3000,
@@ -9,7 +11,7 @@ environments.staging = {
 
 }
 
-
+// Production environment
 environments.production = {
 
     httpPort: 3001,
@@ -18,8 +20,10 @@ environments.production = {
 
 }
 
+// chosen environment
 const chosenEnv = typeof (process.env.NODE_ENV) === 'string' ? process.env.NODE_ENV.toLowerCase() : '';
 
+// exported environment
 const envToExport = typeof (environments[chosenEnv]) !== "undefined" ? environments[chosenEnv] : environments.staging;
 
 

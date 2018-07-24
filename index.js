@@ -1,3 +1,5 @@
+
+// Get the required modules 
 const http = require('http');
 const https = require('https');
 const url = require('url');
@@ -5,7 +7,7 @@ const StringDecoder = require('string_decoder').StringDecoder;
 const fs = require('fs');
 const config = require('./config');
 
-
+// Start and listen to httpServer
 const httpServer = http.createServer((req, res) => unifiedServer(req, res));
 httpServer.listen(config.httpPort, () => console.log(`Server listening on port ${config.httpPort}`));
 
@@ -18,9 +20,11 @@ const httpsServer = https.createServer(httpsServerOptions, (req, res) => unified
 httpsServer.listen(5000, () => console.log(`Server listening on port 5000`));
 */
 
+// Single function for both http and https server
 const unifiedServer = (req, res) => {
 
 
+    // Get the required fields from the request
     const parsedUrl = url.parse(req.url, true);
     const path = parsedUrl.pathname;
     const trimmedPath = path.replace(/^\/+|\/+$/, '');
@@ -32,6 +36,7 @@ const unifiedServer = (req, res) => {
         console.log(err.stack);
     })
 
+    // get the payload 
     let decodedString = '';
     decoder = new StringDecoder('utf-8');
     req.on('data', (chunk) => {
@@ -55,6 +60,7 @@ const unifiedServer = (req, res) => {
 
         const handler = typeof (router[trimmedPath]) !== "undefined" ? router[trimmedPath] : handlers.notFound;
 
+        // return the response
         handler(reqData, (statusCode, resPayload) => {
 
 
@@ -79,6 +85,7 @@ const unifiedServer = (req, res) => {
 }
 
 
+// Handler methods
 const handlers = new Object();
 handlers.hello = (reqPayload, callback) => {
 
@@ -92,7 +99,7 @@ handlers.notFound = (reqPayload, callback) => {
     callback(404);
 }
 
-
+// router object for routing requests
 const router = new Object({
     hello: handlers.hello
 })
